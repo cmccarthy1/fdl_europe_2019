@@ -1,0 +1,4 @@
+gensim
+numpy
+beautifulsoup4
+spacy
