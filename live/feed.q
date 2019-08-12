@@ -5,7 +5,7 @@ h:neg hopen`:localhost:5000
 .ml.loadfile`:init.q
 
 \l ../code/fdl_disasters.q
-\l token_load.p
+\l saved_info/token_load.p
 
 // Python functionality
 pad:.p.import[`keras.preprocessing.sequence]`:pad_sequences
@@ -29,7 +29,7 @@ tweets:neg[count t]?t:1_ first each corpus            // shuffle tweets
 
 load_token:.p.get[`load_pickle];
 tokenizer:load_token[];
-svd_mdl:.p.import[`keras.models][`:load_model]["multiclass_mdl.h5"];
+svd_mdl:.p.import[`keras.models][`:load_model]["saved_info/multiclass_mdl.h5"];
 
 processed_data:{dd:(0#`)!();
  select
@@ -45,8 +45,9 @@ processed_data:{dd:(0#`)!();
 upd_vals:{(h(".u.upd";x;y);processed_data[x]+:1)}
 
 .z.ts:{
- if[(0=n mod 20)and n>1;
-    -1"\nThe following are the number of tweets in each class:";show processed_data;];
+ if[(0=n mod 50)and n>1;
+    -1"\nThe following are the number of tweets in each class for ",string[n]," processed tweets";
+    show processed_data];
  clean_tweet:(rmv_ascii rmv_custom[;rmv_list] rmv_hashtag rmv_single@)tweets[n];
  X:pad[tokenizer[`:texts_to_sequences]enlist clean_tweet;`maxlen pykw 50];
  pred:key[ohe]raze{where x=max x}(svd_mdl[`:predict][X]`)0;
