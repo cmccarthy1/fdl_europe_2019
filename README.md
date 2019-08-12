@@ -10,4 +10,5 @@ This work is broken into two sections:
 
 > **Warning**: It should be noted here that the 'live system' should be seen as a template for such systems with a number of caveats.
 >	1.  The corpus of tweets used is not from the live twitter api but are recycled from the notebook, this allows the proposed workflow to be shown.
+>
 >       2.  Given restrictions in the volume of labelled data the tokenizer used for data encoding is recycled from the notebook, in reality a larger corpus including a larger portion of the English language would allow for truely live training. However the method outlined here was seen as a comprimising step given the size of the dataset.
