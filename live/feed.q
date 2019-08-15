@@ -3,10 +3,10 @@
 .ml.loadfile`:init.q
 
 \l ../code/fdl_disasters.q
-\l saved_info/token_load.p
+\l mdls/token_load.p
 
 // open connection to tick process
-h:neg hopen`:localhost:5000
+h:neg hopen`:localhost:5140
 
 // Python functionality
 pad:.p.import[`keras.preprocessing.sequence]`:pad_sequences
@@ -32,7 +32,7 @@ tweets:neg[count t]?t:1_ first each corpus            // shuffle tweets
 // Load required models and tokenizer for use in live system
 load_token:.p.get[`load_pickle];
 tokenizer:load_token[];
-svd_mdl:.p.import[`keras.models][`:load_model]["saved_info/multiclass_mdl.h5"];
+svd_mdl:.p.import[`keras.models][`:load_model]["mdls/multiclass_mdl.h5"];
 
 // Dictionary to keep information about where classified tweets have been sent
 processed_data:{dd:(0#`)!();
@@ -56,7 +56,7 @@ upd_vals:{(h(".u.upd";x;y);processed_data[x]+:1)}
  clean_tweet:(rmv_ascii rmv_custom[;rmv_list] rmv_hashtag rmv_single@) tweets[n];
  X:pad[tokenizer[`:texts_to_sequences]enlist clean_tweet;`maxlen pykw 50];
  pred:key[ohe]raze{where x=max x}(svd_mdl[`:predict][X]`)0;
- pkg:(.z.N;clean_tweet);
+ pkg:(.z.N;pred[0];clean_tweet);
  $[pred[0]=`affected_individuals;
    upd_vals[`affected_individuals;pkg];
    pred[0]=`caution_advice;
@@ -69,5 +69,5 @@ upd_vals:{(h(".u.upd";x;y);processed_data[x]+:1)}
    upd_vals[`other_useful_info;pkg];
    pred[0]=`infrastructure_utilities;
    upd_vals[`infrastructure_utilities;pkg];
-   upd_vals[`useless_info;pkg]]
+   upd_vals[`useless_info;pkg]];
  n+:1;}

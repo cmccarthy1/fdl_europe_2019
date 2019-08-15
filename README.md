@@ -35,13 +35,18 @@ The code in this white paper is split into two distinct sections and should be r
 2.  The 'live' system should be run as follows
 
 ```
-// tickerplant process
-$ q tick.q -p 5000
+// initialize tickerplant process
+$ q tick.q sym ./log/
+
+For the purposes of this example -p must be set to 5140, setting port accordingly
+
 q)
 
-// Feedhandler process
+
+// Initialize Feedhandler process (set to publist to port 5140)
 $ q feed.q
-/ Publish tweets every 100ms to each of the tables
+
+/ Publish tweets every 100ms to the tickerplant 
 q)\t 100
 The following are the number of tweets in each class for 50 processed tweets
 affected_individuals    | 23
@@ -52,15 +57,26 @@ other_useful_info       | 12
 infrastructure_utilities| 1
 useless_info            | 3
 
-// tickerplant process
-q)affected_individuals
-recv_time            tweet                                                   ..
+
+// Initialize Real time database to handle tables during the day
+$ q tick/r.q -p 5011
+
+q)caution_advice
+time                 sym            tweet                                    ..
 -----------------------------------------------------------------------------..
-0D22:20:30.624629000 "rescueph please help us seek rescue for our friend( jaj..
-0D22:20:30.982261000 "scores killed in flooding in nepal and india nyt world"..
-0D22:20:31.260477000 "more than houses and ppl have died in flood in pakistan..
-0D22:20:31.787175000 "many dead in nepal and india floods via (harradox)"    ..
-0D22:20:31.986113000 "globalcalgary maps evacuated areas in the city of calga..
+0D13:19:27.402944000 caution_advice "abcnews follow our live blog for the lat..
+0D13:19:28.898058000 caution_advice "davidcurnowabc toowoomba not spared wind..
+0D13:19:31.498798000 caution_advice "acpmh check out beyondblue looking after..
+0D13:19:33.797604000 caution_advice "ancalerts pagasa advisory red warning fo..
+0D13:19:34.798857000 caution_advice "flood warning for the dawson and fitzroy..
+q)donations_volunteering
+time                 sym                    tweet                            ..
+-----------------------------------------------------------------------------..
+0D13:19:27.300326000 donations_volunteering "rancyamor annecurtissmith please..
+0D13:19:27.601642000 donations_volunteering "arvindkejriwal all aap mlas to d..
+0D13:19:28.198921000 donations_volunteering "truevirathindu manmohan singh so..
+0D13:19:29.001481000 donations_volunteering "bpincott collecting donations in..
+0D13:19:30.297868000 donations_volunteering "vailresorts vail resorts gives p..
 ``` 
 
 > **Warning**: 
