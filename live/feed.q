@@ -34,18 +34,14 @@ load_token:.p.get[`load_pickle];
 tokenizer:load_token[];
 svd_mdl:.p.import[`keras.models][`:load_model]["mdls/multiclass_mdl.h5"];
 
-// Dictionary to keep information about where classified tweets have been sent
-processed_data:{dd:(0#`)!();
- select
-  affected_individuals:0,
-  caution_advice:0,
-  donations_volunteering:0,
-  sympathy_prayers:0,
-  other_useful_info:0,
-  infrastructure_utilities:0,
-  useless_info:0
- from dd}[]
+// Classes
+c:`affected_individuals`caution_advice`donations_volunteering`sympathy_prayers
+c,:`other_useful_info`infrastructure_utilities`useless_info
+// Create a dictionary showing rolling number of tweets per class
+processed_data:c!count[c]#0
 
+// Function to update the appropriate tables on the tickerplant
+// update the number of values classified in each class
 upd_vals:{(h(".u.upd";x;y);processed_data[x]+:1)}
 
 // Function for live data streaming example
@@ -57,17 +53,5 @@ upd_vals:{(h(".u.upd";x;y);processed_data[x]+:1)}
  X:pad[tokenizer[`:texts_to_sequences]enlist clean_tweet;`maxlen pykw 50];
  pred:key[ohe]raze{where x=max x}(svd_mdl[`:predict][X]`)0;
  pkg:(.z.N;pred[0];clean_tweet);
- $[pred[0]=`affected_individuals;
-   upd_vals[`affected_individuals;pkg];
-   pred[0]=`caution_advice;
-   upd_vals[`caution_advice;pkg];
-   pred[0]=`donations_volunteering;
-   upd_vals[`donations_volunteering;pkg];
-   pred[0]=`sympathy_prayers;
-   upd_vals[`sympathy_prayers;pkg];
-   pred[0]=`other_useful_info;
-   upd_vals[`other_useful_info;pkg];
-   pred[0]=`infrastructure_utilities;
-   upd_vals[`infrastructure_utilities;pkg];
-   upd_vals[`useless_info;pkg]];
+ upd_vals[;pkg] c(count[c]-1)&c?first pred;
  n+:1;}
