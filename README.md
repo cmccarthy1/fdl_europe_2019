@@ -21,7 +21,7 @@ pip:
 or via conda:
 
 ```
-> conda install --file requirements.txt
+>conda install --file requirements.txt
 ```
 
 In addition to this both [EmbedPy](https://github.com/kxsystems/embedpy) and [JupyterQ](https://github.com/kxsystems/jupyterq) are required. The Kx [NLP](https://github.com/kxsystems/nlp) and Kx [ML toolkit](https://github.com/kxsystems/ml) libraries should also be installed in `$QHOME`
